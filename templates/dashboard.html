@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - ContentGenius</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>✨ ContentGenius</h2></div>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/generate">Generate</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard container">
+        <div class="dashboard-header">
+            <h1>Welcome, {{ user.name }}! 👋</h1>
+            <p>Email: {{ user.email }}</p>
+
+            <div style="margin-top: 2rem;">
+                <h3>Your Plan: {{ subscription.plan.title() }}</h3>
+                <p>Usage: {{ subscription.generations_used }} / {{ subscription.generations_limit }} generations</p>
+
+                <div class="usage-bar">
+                    <div class="usage-fill" style="width: {{ (subscription.generations_used / subscription.generations_limit * 100) if subscription.generations_limit > 0 else 0 }}%"></div>
+                </div>
+
+                {% if subscription.plan == 'free' %}
+                <div style="margin-top: 1rem;">
+                    <a href="/pricing" class="btn btn-primary">Upgrade to Pro</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h2>Quick Actions</h2>
+            <div class="features-grid" style="margin-top: 1rem;">
+                <div class="feature-card">
+                    <h3>Generate Content</h3>
+                    <p>Create AI-powered content in seconds</p>
+                    <a href="/generate" class="btn btn-primary">Start Generating</a>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Recent Generations</h3>
+                    <p>{{ generations|length }} total generations</p>
+                    <a href="#history" class="btn btn-secondary">View History</a>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Your Plan</h3>
+                    <p>{{ subscription.plan.title() }} Plan</p>
+                    {% if subscription.plan == 'free' %}
+                    <a href="/pricing" class="btn btn-primary">Upgrade</a>
+                    {% else %}
+                    <span style="color: #4CAF50;">✓ Active</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if generations %}
+        <div style="margin-top: 3rem;" id="history">
+            <h2>Recent Generations</h2>
+            <div style="margin-top: 1rem;">
+                {% for gen in generations[:5] %}
+                <div class="generator-card" style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <h4>{{ gen.content_type.replace('_', ' ').title() }}</h4>
+                        <small>{{ gen.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <p style="color: #666; margin-bottom: 0.5rem;"><strong>Prompt:</strong> {{ gen.prompt[:100] }}...</p>
+                    <p style="color: #333;">{{ gen.output[:200] }}...</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
