@@ -27,6 +27,9 @@ auth = Auth()
 stripe_handler = StripeHandler()
 ai_generator = AIContentGenerator()
 
+# Initialize database on app startup
+db.init_db()
+
 
 def login_required(f):
     """Decorator to require login"""
