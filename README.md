@@ -68,3 +68,4 @@ product/
     ├── vercel.json        # Vercel config
     └── Procfile           # Heroku config
 ```
+# Deployment trigger
